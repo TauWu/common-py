@@ -39,9 +39,12 @@ class Crawler(object):
         
         return self._idx, datas
 
-def re_once(compile: re._compile, content: str) -> str:
-    data_list = re.findall(compile, content)
+def re_once(content: str, *compiles: re._compile) -> str:
+    for compile in compiles:
+        data_list = re.findall(compile, content)
+        if len(data_list) > 0: break
+
     if len(data_list) == 0:
-        raise ValueError(f"No data matched. [{compile}]-[{content}]")
+        raise ValueError(f"No data matched. [{compiles}]-[{content}]")
     else:
         return data_list[0]
