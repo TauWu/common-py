@@ -28,6 +28,9 @@ class FileConf(object):
     def save(self):
         self._conf.write(open(self._path, 'w'))
 
+    def __getitem__(self, k):
+        return self.get(k)
+
     def get(self, k):
         return self._conf[self._section][k]
 

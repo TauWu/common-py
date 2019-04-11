@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractclassmethod
 from time import time
 from hashlib import md5
 from requests import get, post
-from common.conf_base import ConsulConf
+from common.conf_base import ConsulConf, FileConf
 
 class ProxyBase(object, metaclass=ABCMeta):
 
@@ -29,7 +29,10 @@ class XunDaiLiProxy(ProxyBase):
         self.data = dict()
 
     def init_proxy(self):
-        cfg = ConsulConf("proxy/xundaili", "127.0.0.1")
+        try:
+            cfg = ConsulConf("proxy/xundaili", "127.0.0.1")
+        except Exception:
+            cfg = FileConf("conf/proxy", "xundaili")
         self._timestamp = str(int(time()))
 
         str_encode = f'orderno={cfg["orderno"]},secret={cfg["secret"]},timestamp={self._timestamp}'.encode()
