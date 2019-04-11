@@ -17,3 +17,12 @@ common modules and functions for Python.
  |---->| SyncRequestBase
 ```
 
+## Requirements
+
+```sh
+pip install configparser
+pip install requests
+pip install consulate
+pip install redis
+pip install lxml
+```
