@@ -47,7 +47,6 @@ def re_once(content: str, *compiles: re._compile, must: bool=True) -> str:
     if len(data_list) == 0:
         if must:
             raise ValueError(f"No data matched. [{compiles}]-[{content}]")
-        else:
-            return ""
-    else:
-        return data_list[0]
+        return ""
+
+    return data_list[0]
