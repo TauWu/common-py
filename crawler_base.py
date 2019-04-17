@@ -7,12 +7,12 @@ import re
 
 class Downloader(object):
 
-    def __init__(self, url_list, **kwargs):
+    def __init__(self, url_list, proxy=None,**kwargs):
         self._url_list = url_list
         self._headers = None
         if 'headers' in kwargs.keys():
             self._headers = kwargs["headers"]
-        req = AsyncRequestBase(self._url_list, self._headers)
+        req = AsyncRequestBase(self._url_list, self._headers, proxy)
         self._content = req.result
 
     @property

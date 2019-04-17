@@ -24,7 +24,7 @@ class XunDaiLiProxy(ProxyBase):
 
     def __init__(self):
         self.init_proxy()
-        self.headers = dict()
+        self.headers = {"Proxy-Authorization":self._auth}
         self.cookies = dict()
         self.data = dict()
 
@@ -33,15 +33,29 @@ class XunDaiLiProxy(ProxyBase):
             cfg = ConsulConf("proxy/xundaili", "127.0.0.1")
         except Exception:
             cfg = FileConf("conf/proxy", "xundaili")
+
         self._timestamp = str(int(time()))
 
-        str_encode = f'orderno={cfg["orderno"]},secret={cfg["secret"]},timestamp={self._timestamp}'.encode()
+        str_encode = f'orderno={cfg.get("orderno")},secret={cfg.get("secret")},timestamp={self._timestamp}'.encode()
         str_decode = md5(str_encode).hexdigest().upper()
-        self._auth = f'sign={str_decode}&orderno={cfg["orderno"]}&timestamp={self._timestamp}'
-        self._proxy = dict(http=f"http://{cfg[host]}", https=f"https://{cfg[host]}")
+        self._auth = f'sign={str_decode}&orderno={cfg.get("orderno")}&timestamp={self._timestamp}'
+        self._proxy = dict(http="http://%s"%(cfg.get("host")), https="https://%s"%(cfg.get("host")))
 
     def add_headers(self, **kwargs):
         self.headers = dict(self.headers, **kwargs)
+
+    async def async_proxy_request(self, url: str, method: str, session):
+        
+        if method == "GET":
+            async with session.get(url, headers=self.headers, cookies=self.cookies, allow_redirects=False, verify_ssl=False, proxy=self._proxy["http"]) as response:
+                    return await response.text()
+
+        elif method == "POST":
+            async with session.post(url) as response:
+                    return await response.text()
+
+        else:
+            raise ValueError("bad method")
 
     def proxy_request(self, url: str, method: str, **kwargs):
 

@@ -6,13 +6,14 @@ from asyncio import get_event_loop
 
 class AsyncRequestBase(object):
 
-    def __init__(self, url_list, headers=None):
+    def __init__(self, url_list, headers=None, proxy=None):
 
         self._url_dict = {url:None for url in url_list}
         self._url_list = url_list
         self.__loop = get_event_loop()
         self._aiohttp_connector = TCPConnector(limit=100) # Limit for TCPConnector.
         self._headers = headers
+        self._proxy = proxy
 
     @property
     def result(self):
@@ -22,10 +23,15 @@ class AsyncRequestBase(object):
         return self._url_dict
 
     async def get_content(self):
-        async with ClientSession(connector=self._aiohttp_connector, headers=self._headers) as session:
+        async with ClientSession(connector=self._aiohttp_connector, headers=self._headers, requote_redirect_url=False) as session:
             for url in self._url_list:
-                async with session.get(url=url) as resp:
-                    data = await resp.text()
+                if self._proxy is None:
+                    async with session.get(url=url) as resp:
+                        data = await resp.text()
+                else:
+                    async with session.get(url=url) as resp:
+                        data = await self._proxy.async_proxy_request(url, "GET", session)
+
                 self._url_dict[url] = data
 
 class SyncRequestBase(object):
