@@ -50,3 +50,16 @@ def re_once(content: str, *compiles: re._compile, must: bool=True) -> str:
         return ""
 
     return data_list[0]
+
+def re_cycle(content: str, *compiles: re._compile, must: bool=True) -> list:
+    for compile in compiles:
+        data_list = re.findall(compile, content)
+        if len(data_list) > 0: break
+
+    if len(data_list) == 0:
+        if must:
+            raise ValueError(f"No data matched. [{compiles}]-[{content}]")
+        return []
+    
+    return data_list
+    
