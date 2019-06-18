@@ -1,25 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from abc import ABCMeta, abstractclassmethod
 from time import time
 from hashlib import md5
 from requests import get, post
-from common.conf_base import ConsulConf, FileConf
+from common.python.consul import ConsulConf
+from common.python.file import FileConf
 
-class ProxyBase(object, metaclass=ABCMeta):
-
-    @abstractclassmethod
-    def init_proxy(self):
-        ''' create_proxy
-
-        '''
-
-    @abstractclassmethod
-    def proxy_request(self, url: str, method: str, **kwargs):
-        '''get_proxy
-
-        '''
-    
 class XunDaiLiProxy(ProxyBase):
 
     def __init__(self):

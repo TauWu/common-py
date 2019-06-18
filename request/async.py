@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-
 from aiohttp import ClientSession, TCPConnector
 from aiohttp.client_exceptions import ServerDisconnectedError, ClientConnectionError
-from requests import get
 from asyncio import get_event_loop, gather, ensure_future, wait, sleep
 
 class AsyncRequestBase(object):
@@ -60,24 +58,6 @@ class AsyncRequestBase(object):
         async with session.post(url=url, data=payload) as resp:
             self._url_dict[(url, payload)] = await resp.text()
 
-
-class SyncRequestBase(object):
-
-    def __init__(self, url_list, headers=None):
-        self._url_dict = {url:None for url in url_list}
-        self._url_list = url_list
-        self._headers = headers
-
-    @property
-    def result(self):
-        [self.get_content(url) for url in self._url_list]
-        return self._url_dict
-
-
-    def get_content(self, url):
-        data = get(url, headers=self._headers).content
-        self._url_dict[url] = data
-
 if __name__ == "__main__":
     # Test code
     import time
@@ -89,7 +69,6 @@ if __name__ == "__main__":
     req = AsyncRequestBase(url_list, headers=headers)
     print(req.result)
     tm_end_async = time.time()
-
 
     req = SyncRequestBase(url_list, headers=headers)
     print(req.result)

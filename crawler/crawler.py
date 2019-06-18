@@ -1,23 +1,7 @@
 # -*- coding: utf-8 -*-
-
-from common.request_base import AsyncRequestBase
-from common.decode_base import html_to_str
+from common.python.decode import html_to_str
 from lxml import etree
 import re
-
-class Downloader(object):
-
-    def __init__(self, url_list, proxy=None,**kwargs):
-        self._url_list = url_list
-        self._headers = None
-        if 'headers' in kwargs.keys():
-            self._headers = kwargs["headers"]
-        req = AsyncRequestBase(self._url_list, self._headers, proxy)
-        self._content = req.result
-
-    @property
-    def yield_from_content(self):
-        yield from self._content.items()
 
 class Crawler(object):
 
@@ -62,4 +46,3 @@ def re_cycle(content: str, *compiles: re._compile, must: bool=True) -> list:
         return []
     
     return data_list
-    
