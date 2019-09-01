@@ -16,9 +16,7 @@ class URLParser(object):
 
     def get_item(self, item_key):
         res = self.parse()
-        if item_key not in res.keys():
-            return []
-        return res[item_key]
+        return res.get(item_key, [])
 
 if __name__ == "__main__":
     
